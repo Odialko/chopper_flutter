@@ -1,0 +1,34 @@
+name: bfi_api_content
+description: A new Flutter application.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  http: ^0.12.0+4
+  flutter:
+    sdk: flutter
+  chopper: ^2.4.2
+  provider: ^3.0.0+1
+  connectivity: ^0.4.3+2
+  built_value: ^6.7.0
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  chopper_generator: ^2.4.2
+  built_value_generator: ^6.7.0
+  # No version number means the latest version
+  build_runner:
+
+
+flutter:
+
+  uses-material-design: true
+
