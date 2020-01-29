@@ -2,6 +2,7 @@ import 'package:bfi_api_content/data/built_value_converter.dart';
 import 'package:bfi_api_content/model/built_collection.dart';
 import 'package:bfi_api_content/model/collection_model.dart';
 import 'package:bfi_api_content/model/pillar_model.dart';
+import 'package:bfi_api_content/model/post_model.dart';
 import 'package:chopper/chopper.dart';
 import 'package:built_collection/built_collection.dart';
 
@@ -10,7 +11,7 @@ part 'post_api_service.chopper.dart';
 @ChopperApi(baseUrl: '/pillars')
 abstract class PostApiService extends ChopperService {
   @Get(path: '/{pillar}')
-  Future<Response<BuiltCollection>> getPillar(@Path('pillar') String pillarName);
+  Future<Response> getPillar(@Path('pillar') String pillarName);
 
   static PostApiService create() {
     final client = ChopperClient(
@@ -18,7 +19,7 @@ abstract class PostApiService extends ChopperService {
         services: [
           _$PostApiService(),
         ],
-        converter: BuiltValueConverter());
+        converter: JsonConverter());
 
     return _$PostApiService(client);
   }

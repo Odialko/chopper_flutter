@@ -14,9 +14,9 @@ class _$PostApiService extends PostApiService {
 
   final definitionType = PostApiService;
 
-  Future<Response<BuiltCollection>> getPillar(String pillarName) {
+  Future<Response> getPillar(String pillarName) {
     final $url = '/pillars/${pillarName}';
     final $request = Request('GET', $url, client.baseUrl);
-    return client.send<BuiltCollection, BuiltCollection>($request);
+    return client.send<dynamic, dynamic>($request);
   }
 }
