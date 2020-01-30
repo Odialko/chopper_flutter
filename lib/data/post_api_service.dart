@@ -1,5 +1,3 @@
-import 'package:bfi_api_content/data/built_value_converter.dart';
-import 'package:bfi_api_content/model/built_collection.dart';
 import 'package:bfi_api_content/model/collection_model.dart';
 import 'package:bfi_api_content/model/pillar_model.dart';
 import 'package:bfi_api_content/model/post_model.dart';
@@ -20,6 +18,7 @@ abstract class PostApiService extends ChopperService {
           _$PostApiService(),
         ],
         converter: JsonConverter());
+//        converter: BuiltValueConverter());
 
     return _$PostApiService(client);
   }
