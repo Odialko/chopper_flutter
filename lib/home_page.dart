@@ -22,28 +22,22 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('BFI Api'),
       ),
-//      body: Text('asdasd'),
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () async {
-          final newContent = 'rentals';
-//          final newContent = BuiltContent((b) => b..pillar = PillarModel('rentals'));
-          final response =
-            await Provider.of<PostApiService>(context).getPillar(newContent);
-          // We cannot really add any new posts using the placeholder API,
-          // so just print the response to the console
-
-            print(response.body.pillar);
-        }
-      ),
+          child: Icon(Icons.add),
+          onPressed: () async {
+            final newContent = 'free';
+            final response = await Provider.of<PostApiService>(context)
+                .getPillar(newContent);
+            print(response);
+//            _buildBody(context, newContent);
+          }),
     );
   }
 
-  FutureBuilder<Response> _buildBody(BuildContext context) {
+    FutureBuilder<Response> _buildBody(BuildContext context) {
     return FutureBuilder<Response<BuiltContent>>(
-//    return FutureBuilder<Response<PillarModel>>(
-      future: Provider.of<PostApiService>(context).getPillar('free'),
+      future: Provider.of<PostApiService>(context).getPillar('rentals'),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -56,14 +50,38 @@ class _HomePageState extends State<HomePage> {
             );
           }
           final content = snapshot.data.body;
-          print(content.pillar);
-          return Column(
-            children: <Widget>[
-              Center(
-                child: Text(content.pillar),
-              )
-            ],
-          );
+          return ListView.builder(
+              padding: EdgeInsets.all(10.0),
+              itemCount: content.collections.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Text('Pillar: ${content.pillar}'),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Text('id: ${content.collections[0].uuid}'),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Text('title: ${content.collections[0].title}'),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Text('pillar: ${content.collections[0].pillar}'),
+                      ),
+                    ],
+                  )
+                  )
+                );
+              });
         } else {
           return Center(
             child: CircularProgressIndicator(),
@@ -72,5 +90,4 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
 }

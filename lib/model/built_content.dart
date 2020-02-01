@@ -1,23 +1,12 @@
-
-
-//import 'package:bfi_api_content/model/pillar_model.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_collection/built_collection.dart';
 
-import 'collection_model.dart';
-
 part 'built_content.g.dart';
 
 abstract class BuiltContent implements Built<BuiltContent, BuiltContentBuilder> {
-
   String get pillar;
-//  List<CollectionModel> get collection;
-//
-
-//  PillarModel get pillar;
-//  BuiltList<String> get collection;
-//  BuiltList<CollectionModel> get collection;
+  BuiltList<Collection> get collections;
 
   BuiltContent._();
 
@@ -26,10 +15,23 @@ abstract class BuiltContent implements Built<BuiltContent, BuiltContentBuilder> 
   static Serializer<BuiltContent> get serializer => _$builtContentSerializer;
 }
 
-abstract class PillarModel implements Built<PillarModel, PillarModelBuilder> {
+abstract class Pillar implements Built<Pillar, PillarBuilder> {
   String get pillar;
 
-  PillarModel._();
-  factory PillarModel([updates(PillarModelBuilder b)]) = _$PillarModel;
-  static Serializer<PillarModel> get serializer => _$pillarModelSerializer;
+  Pillar._();
+  factory Pillar([updates(PillarBuilder b)]) = _$Pillar;
+  static Serializer<Pillar> get serializer => _$pillarSerializer;
+}
+
+abstract class Collection implements Built<Collection, CollectionBuilder> {
+  @nullable
+  String get uuid;
+  @nullable
+  String get title;
+  @nullable
+  String get pillar;
+
+  Collection._();
+  factory Collection([updates(CollectionBuilder b)]) = _$Collection;
+  static Serializer<Collection> get serializer => _$collectionSerializer;
 }
