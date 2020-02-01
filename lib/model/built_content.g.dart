@@ -8,7 +8,8 @@ part of 'built_content.dart';
 
 Serializer<BuiltContent> _$builtContentSerializer =
     new _$BuiltContentSerializer();
-Serializer<PillarModel> _$pillarModelSerializer = new _$PillarModelSerializer();
+Serializer<Pillar> _$pillarSerializer = new _$PillarSerializer();
+Serializer<Collection> _$collectionSerializer = new _$CollectionSerializer();
 
 class _$BuiltContentSerializer implements StructuredSerializer<BuiltContent> {
   @override
@@ -23,6 +24,10 @@ class _$BuiltContentSerializer implements StructuredSerializer<BuiltContent> {
       'pillar',
       serializers.serialize(object.pillar,
           specifiedType: const FullType(String)),
+      'collections',
+      serializers.serialize(object.collections,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(Collection)])),
     ];
 
     return result;
@@ -43,6 +48,12 @@ class _$BuiltContentSerializer implements StructuredSerializer<BuiltContent> {
           result.pillar = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'collections':
+          result.collections.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(Collection)]))
+              as BuiltList<dynamic>);
+          break;
       }
     }
 
@@ -50,14 +61,14 @@ class _$BuiltContentSerializer implements StructuredSerializer<BuiltContent> {
   }
 }
 
-class _$PillarModelSerializer implements StructuredSerializer<PillarModel> {
+class _$PillarSerializer implements StructuredSerializer<Pillar> {
   @override
-  final Iterable<Type> types = const [PillarModel, _$PillarModel];
+  final Iterable<Type> types = const [Pillar, _$Pillar];
   @override
-  final String wireName = 'PillarModel';
+  final String wireName = 'Pillar';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, PillarModel object,
+  Iterable<Object> serialize(Serializers serializers, Pillar object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'pillar',
@@ -69,9 +80,9 @@ class _$PillarModelSerializer implements StructuredSerializer<PillarModel> {
   }
 
   @override
-  PillarModel deserialize(Serializers serializers, Iterable<Object> serialized,
+  Pillar deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new PillarModelBuilder();
+    final result = new PillarBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -90,16 +101,82 @@ class _$PillarModelSerializer implements StructuredSerializer<PillarModel> {
   }
 }
 
+class _$CollectionSerializer implements StructuredSerializer<Collection> {
+  @override
+  final Iterable<Type> types = const [Collection, _$Collection];
+  @override
+  final String wireName = 'Collection';
+
+  @override
+  Iterable<Object> serialize(Serializers serializers, Collection object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[];
+    if (object.uuid != null) {
+      result
+        ..add('uuid')
+        ..add(serializers.serialize(object.uuid,
+            specifiedType: const FullType(String)));
+    }
+    if (object.title != null) {
+      result
+        ..add('title')
+        ..add(serializers.serialize(object.title,
+            specifiedType: const FullType(String)));
+    }
+    if (object.pillar != null) {
+      result
+        ..add('pillar')
+        ..add(serializers.serialize(object.pillar,
+            specifiedType: const FullType(String)));
+    }
+    return result;
+  }
+
+  @override
+  Collection deserialize(Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new CollectionBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'uuid':
+          result.uuid = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'title':
+          result.title = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'pillar':
+          result.pillar = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
 class _$BuiltContent extends BuiltContent {
   @override
   final String pillar;
+  @override
+  final BuiltList<Collection> collections;
 
   factory _$BuiltContent([void Function(BuiltContentBuilder) updates]) =>
       (new BuiltContentBuilder()..update(updates)).build();
 
-  _$BuiltContent._({this.pillar}) : super._() {
+  _$BuiltContent._({this.pillar, this.collections}) : super._() {
     if (pillar == null) {
       throw new BuiltValueNullFieldError('BuiltContent', 'pillar');
+    }
+    if (collections == null) {
+      throw new BuiltValueNullFieldError('BuiltContent', 'collections');
     }
   }
 
@@ -113,17 +190,21 @@ class _$BuiltContent extends BuiltContent {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is BuiltContent && pillar == other.pillar;
+    return other is BuiltContent &&
+        pillar == other.pillar &&
+        collections == other.collections;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, pillar.hashCode));
+    return $jf($jc($jc(0, pillar.hashCode), collections.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('BuiltContent')..add('pillar', pillar))
+    return (newBuiltValueToStringHelper('BuiltContent')
+          ..add('pillar', pillar)
+          ..add('collections', collections))
         .toString();
   }
 }
@@ -136,11 +217,18 @@ class BuiltContentBuilder
   String get pillar => _$this._pillar;
   set pillar(String pillar) => _$this._pillar = pillar;
 
+  ListBuilder<Collection> _collections;
+  ListBuilder<Collection> get collections =>
+      _$this._collections ??= new ListBuilder<Collection>();
+  set collections(ListBuilder<Collection> collections) =>
+      _$this._collections = collections;
+
   BuiltContentBuilder();
 
   BuiltContentBuilder get _$this {
     if (_$v != null) {
       _pillar = _$v.pillar;
+      _collections = _$v.collections?.toBuilder();
       _$v = null;
     }
     return this;
@@ -161,36 +249,51 @@ class BuiltContentBuilder
 
   @override
   _$BuiltContent build() {
-    final _$result = _$v ?? new _$BuiltContent._(pillar: pillar);
+    _$BuiltContent _$result;
+    try {
+      _$result = _$v ??
+          new _$BuiltContent._(
+              pillar: pillar, collections: collections.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'collections';
+        collections.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'BuiltContent', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
 }
 
-class _$PillarModel extends PillarModel {
+class _$Pillar extends Pillar {
   @override
   final String pillar;
 
-  factory _$PillarModel([void Function(PillarModelBuilder) updates]) =>
-      (new PillarModelBuilder()..update(updates)).build();
+  factory _$Pillar([void Function(PillarBuilder) updates]) =>
+      (new PillarBuilder()..update(updates)).build();
 
-  _$PillarModel._({this.pillar}) : super._() {
+  _$Pillar._({this.pillar}) : super._() {
     if (pillar == null) {
-      throw new BuiltValueNullFieldError('PillarModel', 'pillar');
+      throw new BuiltValueNullFieldError('Pillar', 'pillar');
     }
   }
 
   @override
-  PillarModel rebuild(void Function(PillarModelBuilder) updates) =>
+  Pillar rebuild(void Function(PillarBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  PillarModelBuilder toBuilder() => new PillarModelBuilder()..replace(this);
+  PillarBuilder toBuilder() => new PillarBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is PillarModel && pillar == other.pillar;
+    return other is Pillar && pillar == other.pillar;
   }
 
   @override
@@ -200,21 +303,21 @@ class _$PillarModel extends PillarModel {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('PillarModel')..add('pillar', pillar))
+    return (newBuiltValueToStringHelper('Pillar')..add('pillar', pillar))
         .toString();
   }
 }
 
-class PillarModelBuilder implements Builder<PillarModel, PillarModelBuilder> {
-  _$PillarModel _$v;
+class PillarBuilder implements Builder<Pillar, PillarBuilder> {
+  _$Pillar _$v;
 
   String _pillar;
   String get pillar => _$this._pillar;
   set pillar(String pillar) => _$this._pillar = pillar;
 
-  PillarModelBuilder();
+  PillarBuilder();
 
-  PillarModelBuilder get _$this {
+  PillarBuilder get _$this {
     if (_$v != null) {
       _pillar = _$v.pillar;
       _$v = null;
@@ -223,21 +326,115 @@ class PillarModelBuilder implements Builder<PillarModel, PillarModelBuilder> {
   }
 
   @override
-  void replace(PillarModel other) {
+  void replace(Pillar other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$PillarModel;
+    _$v = other as _$Pillar;
   }
 
   @override
-  void update(void Function(PillarModelBuilder) updates) {
+  void update(void Function(PillarBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$PillarModel build() {
-    final _$result = _$v ?? new _$PillarModel._(pillar: pillar);
+  _$Pillar build() {
+    final _$result = _$v ?? new _$Pillar._(pillar: pillar);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$Collection extends Collection {
+  @override
+  final String uuid;
+  @override
+  final String title;
+  @override
+  final String pillar;
+
+  factory _$Collection([void Function(CollectionBuilder) updates]) =>
+      (new CollectionBuilder()..update(updates)).build();
+
+  _$Collection._({this.uuid, this.title, this.pillar}) : super._();
+
+  @override
+  Collection rebuild(void Function(CollectionBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  CollectionBuilder toBuilder() => new CollectionBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is Collection &&
+        uuid == other.uuid &&
+        title == other.title &&
+        pillar == other.pillar;
+  }
+
+  @override
+  int get hashCode {
+    return $jf(
+        $jc($jc($jc(0, uuid.hashCode), title.hashCode), pillar.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('Collection')
+          ..add('uuid', uuid)
+          ..add('title', title)
+          ..add('pillar', pillar))
+        .toString();
+  }
+}
+
+class CollectionBuilder implements Builder<Collection, CollectionBuilder> {
+  _$Collection _$v;
+
+  String _uuid;
+  String get uuid => _$this._uuid;
+  set uuid(String uuid) => _$this._uuid = uuid;
+
+  String _title;
+  String get title => _$this._title;
+  set title(String title) => _$this._title = title;
+
+  String _pillar;
+  String get pillar => _$this._pillar;
+  set pillar(String pillar) => _$this._pillar = pillar;
+
+  CollectionBuilder();
+
+  CollectionBuilder get _$this {
+    if (_$v != null) {
+      _uuid = _$v.uuid;
+      _title = _$v.title;
+      _pillar = _$v.pillar;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(Collection other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$Collection;
+  }
+
+  @override
+  void update(void Function(CollectionBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$Collection build() {
+    final _$result =
+        _$v ?? new _$Collection._(uuid: uuid, title: title, pillar: pillar);
     replace(_$result);
     return _$result;
   }
